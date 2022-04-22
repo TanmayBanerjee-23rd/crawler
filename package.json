@@ -1,0 +1,18 @@
+{
+  "name": "crawler",
+  "version": "1.0.0",
+  "description": "crawls web pages to get info in JSON format",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Tanmay Banerjee",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "cheerio": "*",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "moment": "^2.29.3"
+  }
+}
