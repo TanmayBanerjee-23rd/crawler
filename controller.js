@@ -6,6 +6,10 @@ exports.getCrawlResultsInJson = async ( req ) => {
 
     const { urlToCrawl } = req.body;
 
+    if ( !urlToCrawl ) throw Error( "Please provide the Url to Crawl!" );
+
+    if ( !urlToCrawl.includes( "https://www.tigerdirect.com" ) ) throw Error( "Url to crawl should start with 'https://www.tigerdirect.com'!" );
+
     const xhrRes = await axios( urlToCrawl );
 
     const html = xhrRes.data;
@@ -13,11 +17,11 @@ exports.getCrawlResultsInJson = async ( req ) => {
 
     const customerReviews = domManipulator( "#CustomerReviewsBlock #customerReviews #customerReviews" );
 
-    let responseArrOfReviews = [];
+    let reviews = [];
 
-    customerReviews.each( function( review ) {
+    customerReviews.each( function( ) {
 
-        responseArrOfReviews.push( {
+        reviews.push( {
             comment: domManipulator( this ).find( ".review > .rightCol > blockquote > p").text(),
             rating: domManipulator( this ).find( ".review > .leftCol > .itemReview > dd > .itemRating > strong").text(),
             date: domManipulator( this ).find( " .review > .leftCol > .reviewer > dd:nth-child(4)").text(),
@@ -25,6 +29,19 @@ exports.getCrawlResultsInJson = async ( req ) => {
         } );
         
     });
+    
+    let responseObj = { reviews };
 
-    return Promise.resolve( responseArrOfReviews );
+    if ( domManipulator( ".reviewPage > dd > a").attr('title').trim() === "Previous" ) {
+
+        responseObj.previousReviewsPageUrl = "https://www.tigerdirect.com"+ domManipulator( ".reviewPage > dd > a:nth-child(1)").attr( "href" ).trim();
+        
+        if ( domManipulator( ".reviewPage > dd > a:nth-child(2)").attr( "href" ) ) {
+            responseObj.nextReviewsPageUrl = "https://www.tigerdirect.com"+ domManipulator( ".reviewPage > dd > a:nth-child(2)").attr( "href" ).trim();
+        }
+    
+    } else responseObj.nextReviewsPageUrl = "https://www.tigerdirect.com"+ domManipulator( ".reviewPage > dd > a").attr('href').trim();
+
+
+    return Promise.resolve( responseObj );
 };

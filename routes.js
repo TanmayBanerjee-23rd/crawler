@@ -18,9 +18,9 @@ router.post( "/", ( req, res ) => {
     */
 
     controler.getCrawlResultsInJson( req )
-    .then( results => res.status( 200 ).send( {
+    .then( result => res.status( 200 ).send( {
         success: true,
-        data: results,
+        data: result,
         errorMessage: ""
     } ) )
     .catch( err => {

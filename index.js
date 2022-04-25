@@ -31,7 +31,7 @@ app.use( ( req, res ) => {
 } );
 
 
-/* Catch-all error handler for express */
+/* Catch-all error handler middleware for express */
 const errorHandler = ( err, req, res, next ) => {
 
     if ( res.headersSent ) {
